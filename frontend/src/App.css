@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@500&display=swap');
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Leaflet map fixes */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #f8fafc;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.leaflet-popup-content {
+  margin: 12px;
+}
+
+/* Custom scrollbar for panels */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
+
+/* Recharts responsive container fix */
+.recharts-responsive-container {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
