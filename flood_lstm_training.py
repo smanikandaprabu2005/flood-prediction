@@ -1,206 +1,4 @@
-"""import numpy as np
-import pandas as pd
-import tensorflow as tf
 
-from sklearn.utils.class_weight import compute_class_weight
-from sklearn.metrics import confusion_matrix, classification_report, recall_score
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout, LayerNormalization
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
-
-
-# =====================================
-# 0. MODEL BUILDER FUNCTION
-# =====================================
-def build_lstm_model(time_steps, n_features, n_classes):
-    model = Sequential([
-        LSTM(64, return_sequences=True, input_shape=(time_steps, n_features)),
-        LayerNormalization(),
-        Dropout(0.3),
-
-        LSTM(32),
-        LayerNormalization(),
-        Dropout(0.3),
-
-        Dense(32, activation="relu"),
-        Dense(n_classes, activation="softmax")
-    ])
-
-    model.compile(
-        optimizer=Adam(learning_rate=0.001),
-        loss="sparse_categorical_crossentropy",
-        metrics=["accuracy"]   # ⚠️ ONLY accuracy here (safe)
-    )
-    return model
-
-
-# =====================================
-# 1. LOAD PREPROCESSED DATA
-# =====================================
-df = pd.read_csv("flood_preprocessed.csv")
-
-FEATURE_COLS = [
-    "Rain_3day_sum",
-    "Rain_7day_sum",
-    "Rain_3day_avg",
-    "Max_Normalized_River_Level",
-    "Avg_Normalized_River_Level",
-    "Max_River_Rise"
-]
-
-LABEL_COL = "Flood_Label"
-
-X = df[FEATURE_COLS].values
-y = df[LABEL_COL].values
-
-
-# =====================================
-# 2. SEQUENCE CREATION (LSTM WINDOWS)
-# =====================================
-TIME_STEPS = 7
-
-def create_sequences(X, y, window):
-    X_seq, y_seq = [], []
-    for i in range(len(X) - window):
-        X_seq.append(X[i:i + window])
-        y_seq.append(y[i + window])
-    return np.array(X_seq), np.array(y_seq)
-
-X_seq, y_seq = create_sequences(X, y, TIME_STEPS)
-
-print("Sequence shape:", X_seq.shape)
-print("Label shape:", y_seq.shape)
-
-
-# =====================================
-# 3. WALK-FORWARD TIME-SERIES CV SETUP
-# =====================================
-N_FEATURES = X_seq.shape[2]
-N_CLASSES = len(np.unique(y_seq))
-
-# (train_end %, val_end %)
-folds = [
-    (0.6, 0.7),
-    (0.7, 0.8),
-    (0.8, 0.9)
-]
-
-cv_results = []
-
-
-# =====================================
-# 4. CROSS-VALIDATION LOOP
-# =====================================
-for fold_id, (train_end, val_end) in enumerate(folds, start=1):
-    print(f"\n================ FOLD {fold_id} ================")
-
-    train_idx = int(train_end * len(X_seq))
-    val_idx = int(val_end * len(X_seq))
-
-    X_train, X_val = X_seq[:train_idx], X_seq[train_idx:val_idx]
-    y_train, y_val = y_seq[:train_idx], y_seq[train_idx:val_idx]
-
-    print("Train samples:", len(X_train))
-    print("Val samples:", len(X_val))
-
-    # ---------------------------------
-    # CLASS WEIGHTS (TRAINING ONLY)
-    # ---------------------------------
-    classes = np.unique(y_train)
-    weights = compute_class_weight(
-        class_weight="balanced",
-        classes=classes,
-        y=y_train
-    )
-    class_weight_dict = dict(zip(classes, weights))
-
-    print("Class weights:", class_weight_dict)
-
-    # ---------------------------------
-    # BUILD MODEL
-    # ---------------------------------
-    model = build_lstm_model(TIME_STEPS, N_FEATURES, N_CLASSES)
-
-    # ---------------------------------
-    # TRAIN MODEL
-    # ---------------------------------
-    early_stop = EarlyStopping(
-        monitor="val_loss",
-        patience=5,
-        restore_best_weights=True
-    )
-
-    model.fit(
-        X_train,
-        y_train,
-        validation_data=(X_val, y_val),
-        epochs=50,
-        batch_size=32,
-        class_weight=class_weight_dict,
-        shuffle=False,          # REQUIRED for time series
-        callbacks=[early_stop],
-        verbose=1
-    )
-
-    # ---------------------------------
-    # EVALUATION (SAFE)
-    # ---------------------------------
-    y_pred = model.predict(X_val)
-    y_pred_classes = np.argmax(y_pred, axis=1)
-
-    print("\nConfusion Matrix:")
-    print(confusion_matrix(y_val, y_pred_classes))
-
-    print("\nClassification Report:")
-    print(classification_report(y_val, y_pred_classes, zero_division=0))
-
-    # SAFE recall computation (no crashes)
-    recall_severe = recall_score(
-        y_val, y_pred_classes, labels=[2], average=None, zero_division=0
-    )[0]
-
-    recall_moderate = recall_score(
-        y_val, y_pred_classes, labels=[1], average=None, zero_division=0
-    )[0]
-
-    acc = np.mean(y_pred_classes == y_val)
-
-    cv_results.append({
-        "fold": fold_id,
-        "accuracy": acc,
-        "recall_severe": recall_severe,
-        "recall_moderate": recall_moderate
-    })
-
-
-# =====================================
-# 5. CV SUMMARY
-# =====================================
-print("\n================ CV SUMMARY ================")
-
-for r in cv_results:
-    print(
-        f"Fold {r['fold']} → "
-        f"Acc: {r['accuracy']:.3f}, "
-        f"Recall Severe: {r['recall_severe']:.3f}, "
-        f"Recall Moderate: {r['recall_moderate']:.3f}"
-    )
-
-print("\nMEAN CV METRICS")
-print(f"Accuracy        : {np.mean([r['accuracy'] for r in cv_results]):.3f}")
-print(f"Recall (Severe) : {np.mean([r['recall_severe'] for r in cv_results]):.3f}")
-print(f"Recall (Moderate): {np.mean([r['recall_moderate'] for r in cv_results]):.3f}")
-
-
-# =====================================
-# 6. SAVE FINAL MODEL (LAST FOLD)
-# =====================================
-model.save("flood_lstm_model.keras")
-print("\n✅ Training + Time-Series Cross-Validation completed successfully")
-
-"""
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -235,7 +33,11 @@ def build_lstm_model(time_steps, n_features):
     model.compile(
         optimizer=Adam(learning_rate=0.001),
         loss="binary_crossentropy",       # ✅ Correct loss
-        metrics=["accuracy"]
+        metrics=[
+            tf.keras.metrics.AUC(name="auc"),        # main quality signal
+            tf.keras.metrics.Precision(name="precision"),
+            tf.keras.metrics.Recall(name="recall")
+        ]
     )
     return model
 
@@ -284,9 +86,13 @@ print("Label shape   :", y_seq.shape)
 N_FEATURES = X_seq.shape[2]
 
 # (train %, val %)
-folds = [
+"""folds = [
     (0.55, 0.65),
     (0.65, 0.85)
+]"""
+folds = [
+    (0.5, 0.71),
+    (0.71, 0.95)
 ]
 
 cv_results = []
@@ -328,7 +134,8 @@ for fold_id, (train_end, val_end) in enumerate(folds, start=1):
     early_stop = EarlyStopping(
         monitor="val_loss",
         patience=5,
-        restore_best_weights=True
+        restore_best_weights=True,
+       # mode=max
     )
 
     model.fit(

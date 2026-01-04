@@ -38,6 +38,30 @@ df["Max_River_Rise"] = df["Max_River_Rise"].clip(lower=0)
 # Cap extreme spikes (sensor / release artefacts)
 upper = df["Max_River_Rise"].quantile(0.99)
 df["Max_River_Rise"] = df["Max_River_Rise"].clip(0, upper)
+# -----------------------------
+# 7. LABEL CREATION WITH BANDED LOGIC (TARGET)
+# -----------------------------
+def create_flood_label(row):
+    level = row["Max_Normalized_River_Level"]
+    rise  = row["Max_River_Rise"]
+    rain  = row["Rain_3day_sum"]
+
+    # Continuous risk scores (0–1)
+    level_score = min(level / 0.7, 1.0)
+    rise_score  = min(rise / 0.5, 1.0)
+    rain_score  = min(rain / 50.0, 1.0)
+
+    # Weighted flood risk
+    flood_risk = (
+        0.4 * level_score +
+        0.35 * rise_score +
+        0.25 * rain_score
+    )
+
+    return 1 if flood_risk >= 0.6 else 0
+
+
+df["Flood_Label"] = df.apply(create_flood_label, axis=1)
 
 # =====================================
 # 5. SCALE FEATURES (LSTM REQUIRED)

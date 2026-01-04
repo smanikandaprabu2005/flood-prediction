@@ -5,10 +5,9 @@ import DashboardLayout from './components/DashboardLayout';
 import Sidebar from './components/Sidebar';
 import MapView from './components/MapView';
 import PredictionPanel from './components/PredictionPanel';
-import { Toaster } from '@/components/ui/sonner';
-import { toast } from 'sonner';
+import { Toaster, toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 const API = `${BACKEND_URL}/api`;
 
 function App() {

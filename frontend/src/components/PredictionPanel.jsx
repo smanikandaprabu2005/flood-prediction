@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, Badge } from './ui/components.jsx';
 import { AlertTriangle, CheckCircle, AlertCircle, Droplets, CloudRain, Activity } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 

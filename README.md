@@ -1,53 +1,142 @@
-Raw Data
-   ↓
-Feature Engineering
-   ↓
-Preprocessing (scaling, cleaning)   ← DONE
-   ↓
-Sequence Creation (LSTM windows)
-   ↓
-Train / Validation Split
-   ↓
-🟢 Class Weights (HERE, ONLY HERE)
-   ↓
-LSTM Training
+# Flood Prediction Web Application
 
+A complete flood prediction system using LSTM machine learning model with real-time data scraping and interactive visualization.
 
-model architecture
+## Features
 
-Input (7 × 6)
- ↓
-LSTM (64, return_sequences=True)
- ↓
-LayerNormalization
- ↓
-Dropout (0.3)
- ↓
-LSTM (32)
- ↓
-LayerNormalization
- ↓
-Dropout (0.3)
- ↓
-Dense (32, ReLU)
- ↓
-Dense (4, Softmax)
+- **LSTM Model**: Trained binary classification model for flood prediction
+- **Real-time Data**: Scrapes water level data from India Water Resources website
+- **Weather Integration**: Fetches rainfall data from Open-Meteo API
+- **Interactive Map**: Leaflet-based India map with river station markers
+- **Modern UI**: React frontend with Tailwind CSS
+- **FastAPI Backend**: RESTful API with CORS support
 
+## Architecture
 
-training
+### Backend (FastAPI)
+- `/api/stations` - Get all river monitoring stations
+- `/api/scrape-water-level` - Scrape water level data from government site
+- `/api/predict` - Make flood prediction using LSTM model
 
-PS D:\pers\disaster> python .\flood_lstm_training.py
-2025-12-30 20:20:09.776545: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-Sequence shape: (1616, 7, 6)
-Label shape   : (1616,)
+### Frontend (React)
+- Interactive map with station markers
+- Cascading dropdowns for location selection
+- Real-time prediction results with charts
+- Responsive design
 
-================ FOLD 1 ================
-Train samples: 888
-Val samples  : 162
-Floods in Val: 20
-Class weights: {0: 0.6656671664167916, 1: 2.009049773755656}
-2025-12-30 20:20:15.819385: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+## Setup Instructions
+
+### Prerequisites
+- Python 3.10+
+- Node.js 16+
+- Playwright browsers
+
+### Backend Setup
+
+1. Navigate to backend directory:
+```bash
+cd backend
+```
+
+2. Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Install Playwright browsers:
+```bash
+python -m playwright install chromium
+```
+
+4. Start the backend server:
+```bash
+python server.py
+```
+Server will run on http://localhost:8001
+
+### Frontend Setup
+
+1. Navigate to frontend directory:
+```bash
+cd frontend
+```
+
+2. Install Node dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+Frontend will run on http://localhost:5173
+
+## Model Details
+
+### Input Features (Last 7 days)
+- Rain_3day_sum: Sum of rainfall over last 3 days
+- Rain_7day_sum: Sum of rainfall over last 7 days
+- Rain_3day_avg: Average rainfall over last 3 days
+- Max_Normalized_River_Level: Maximum normalized river level
+- Avg_Normalized_River_Level: Average normalized river level
+- Max_River_Rise: Maximum daily river level rise
+
+### Output
+- Binary classification: Flood (1) / No Flood (0)
+- Probability score (0-1)
+- Status: Safe/Warning/Danger
+
+## Data Sources
+
+1. **Rainfall Data**: Open-Meteo API (free, no API key required)
+2. **Water Level Data**: Scraped from https://ffs.india-water.gov.in/
+3. **Station Information**: Pre-loaded Excel file with 1645+ stations
+
+## Technologies Used
+
+- **Backend**: FastAPI, TensorFlow/Keras, Playwright, Pandas
+- **Frontend**: React, Leaflet, Recharts, Tailwind CSS
+- **ML Model**: LSTM Neural Network
+- **Data Processing**: Scikit-learn, NumPy
+
+## API Endpoints
+
+### GET /api/stations
+Returns list of all monitoring stations with location data.
+
+### POST /api/scrape-water-level
+Scrapes water level data for a specific station.
+```json
+{
+  "state": "Maharashtra",
+  "district": "Pune",
+  "basin": "Krishna",
+  "river": "Bhima"
+}
+```
+
+### POST /api/predict
+Makes flood prediction for a location.
+```json
+{
+  "state": "Maharashtra",
+  "district": "Pune",
+  "basin": "Krishna",
+  "river": "Bhima"
+}
+```
+
+## Development Notes
+
+- The scraper uses Playwright for robust web scraping
+- Data is cached for 1 hour to reduce server load
+- Model predictions include confidence scores
+- Frontend uses Vite for fast development
+
+## License
+
+This project is for educational and research purposes. Please respect the terms of service of data sources used.
 Epoch 1/50
 28/28 ━━━━━━━━━━━━━━━━━━━━ 4s 28ms/step - accuracy: 0.5755 - loss: 1.4325 - val_accuracy: 0.8889 - val_loss: 0.5234
 Epoch 2/50

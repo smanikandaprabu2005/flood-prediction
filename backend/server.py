@@ -7,6 +7,14 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import List, Optional
 import pandas as pd
+import json
+import numpy as np
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj) or np.isneginf(obj)):
+            return None
+        return super().default(obj)
 
 from scraper import RiverDataScraper
 from model_inference import FloodPredictor
@@ -16,7 +24,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Create the main app
-app = FastAPI()
+app = FastAPI(json_encoder=CustomJSONEncoder)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -39,6 +47,9 @@ stations_df = None
 
 try:
     stations_df = pd.read_excel(STATIONS_FILE)
+    # Clean NaN values in string columns
+    stations_df['Basin Name'] = stations_df['Basin Name'].fillna('')
+    stations_df['River Name'] = stations_df['River Name'].fillna('')
     logger.info(f"Loaded {len(stations_df)} stations")
 except Exception as e:
     logger.error(f"Failed to load stations data: {e}")
@@ -91,9 +102,13 @@ async def get_stations():
     # Get unique values for dropdowns
     states = sorted(stations_df['State name'].unique().tolist())
     
-    # Get all stations as list
+    # Get all stations as list, filtering out invalid coordinates
     stations = []
     for _, row in stations_df.iterrows():
+        # Skip stations with invalid coordinates
+        if pd.isna(row['Latitude']) or pd.isna(row['longitude']):
+            continue
+            
         stations.append({
             "station_name": row['Station Name'],
             "state": row['State name'],
@@ -180,12 +195,19 @@ async def predict_flood(request: PredictionRequest):
         latitude = float(station['Latitude'])
         longitude = float(station['longitude'])
         
-        logger.info(f"Predicting flood for {station['Station Name']}")
-        
+        #logger.info(f"Predicting flood for {station['Station Name']}")
+        logger.info(
+            f"Predicting flood for station: {station['Station Name']} | "
+            f"Latitude: {latitude}, Longitude: {longitude}"
+        )
         # Fetch rainfall data (last 7 days)
         logger.info("Fetching rainfall data...")
         rainfall_data = await weather_api.get_rainfall_data(latitude, longitude, days=7)
-        
+        logger.info(
+            f"Rainfall data (last 7 days) for "
+            f"{station['Station Name']} "
+            f"[{latitude}, {longitude}]: {rainfall_data}"
+        )
         # Scrape water level data
         logger.info("Scraping water level data...")
         water_data = await scraper.scrape_water_level(
@@ -194,6 +216,17 @@ async def predict_flood(request: PredictionRequest):
             request.basin,
             request.river
         )
+        
+        # Log scraped data
+        logger.info("===== SCRAPED WATER LEVEL DATA =====")
+        logger.info(f"Station Name   : {water_data.get('station_name')}")
+        logger.info(f"Water Levels  : {water_data.get('water_levels')}")
+        logger.info(f"Warning Level : {water_data.get('warning_level')}")
+        logger.info(f"Danger Level  : {water_data.get('danger_level')}")
+        logger.info(f"HFL           : {water_data.get('hfl')}")
+        logger.info(f"Latitude      : {water_data.get('latitude')}")
+        logger.info(f"Longitude     : {water_data.get('longitude')}")
+        logger.info("===================================")
         
         water_levels = water_data.get('water_levels', [])
         warning_level = water_data.get('warning_level', 50.0)
@@ -243,3 +276,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)

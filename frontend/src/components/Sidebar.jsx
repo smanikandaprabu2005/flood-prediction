@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/components.jsx';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 const API = `${BACKEND_URL}/api`;
 
 const Sidebar = ({ onPredict, loading }) => {
