@@ -15,7 +15,6 @@ A complete flood prediction system using LSTM machine learning model with real-t
 
 ### Backend (FastAPI)
 - `/api/stations` - Get all river monitoring stations
-- `/api/scrape-water-level` - Scrape water level data from government site
 - `/api/predict` - Make flood prediction using LSTM model
 
 ### Frontend (React)
@@ -29,7 +28,6 @@ A complete flood prediction system using LSTM machine learning model with real-t
 ### Prerequisites
 - Python 3.10+
 - Node.js 16+
-- Playwright browsers
 
 ### Backend Setup
 
@@ -90,12 +88,12 @@ Frontend will run on http://localhost:5173
 ## Data Sources
 
 1. **Rainfall Data**: Open-Meteo API (free, no API key required)
-2. **Water Level Data**: Scraped from https://ffs.india-water.gov.in/
+2. **Water Level Data**: Got from https://ffs.india-water.gov.in/
 3. **Station Information**: Pre-loaded Excel file with 1645+ stations
 
 ## Technologies Used
 
-- **Backend**: FastAPI, TensorFlow/Keras, Playwright, Pandas
+- **Backend**: FastAPI, TensorFlow/Keras,Pandas
 - **Frontend**: React, Leaflet, Recharts, Tailwind CSS
 - **ML Model**: LSTM Neural Network
 - **Data Processing**: Scikit-learn, NumPy
@@ -104,17 +102,6 @@ Frontend will run on http://localhost:5173
 
 ### GET /api/stations
 Returns list of all monitoring stations with location data.
-
-### POST /api/scrape-water-level
-Scrapes water level data for a specific station.
-```json
-{
-  "state": "Maharashtra",
-  "district": "Pune",
-  "basin": "Krishna",
-  "river": "Bhima"
-}
-```
 
 ### POST /api/predict
 Makes flood prediction for a location.
@@ -127,228 +114,223 @@ Makes flood prediction for a location.
 }
 ```
 
-## Development Notes
-
-- The scraper uses Playwright for robust web scraping
-- Data is cached for 1 hour to reduce server load
-- Model predictions include confidence scores
-- Frontend uses Vite for fast development
 
 ## License
 
 This project is for educational and research purposes. Please respect the terms of service of data sources used.
+PS D:\pers\disaster> python flood_lstm_training.py
+2026-01-04 19:41:06.872438: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.       
+Sequence shape: (1616, 7, 6)
+Label shape   : (1616,)
+
+================ FOLD 1 ================
+Train samples: 808
+Val samples  : 355
+Floods in Val: 80
+Class weights: {0: 0.6644736842105263, 1: 2.02}
+2026-01-04 19:41:18.819819: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
 Epoch 1/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 4s 28ms/step - accuracy: 0.5755 - loss: 1.4325 - val_accuracy: 0.8889 - val_loss: 0.5234
+ 1/26 ━━━━━━━━━━━━━━━━━━━━ 3:52 9s/step - auc: 0.4583 - loss: 0.9235 - precision: 0.8148 - recall: 0 5/26 ━━━━━━━━━━━━━━━━━━━━ 0s 15ms/step - auc: 0.3461 - loss: 0.9636 - precision: 0.6081 - recall: 0 9/26 ━━━━━━━━━━━━━━━━━━━━ 0s 14ms/step - auc: 0.3458 - loss: 1.0152 - precision: 0.4520 - recall: 013/26 ━━━━━━━━━━━━━━━━━━━━ 0s 14ms/step - auc: 0.3597 - loss: 1.0081 - precision: 0.4111 - recall: 016/26 ━━━━━━━━━━━━━━━━━━━━ 0s 15ms/step - auc: 0.3668 - loss: 0.9987 - precision: 0.3953 - recall: 019/26 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - auc: 0.3749 - loss: 0.9873 - precision: 0.3828 - recall: 022/26 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - auc: 0.3897 - loss: 0.9707 - precision: 0.3723 - recall: 026/26 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - auc: 0.4146 - loss: 0.9436 - precision: 0.3608 - recall:26/26 ━━━━━━━━━━━━━━━━━━━━ 12s 106ms/step - auc: 0.5695 - loss: 0.7754 - precision: 0.2954 - recall: 0.7400 - val_auc: 0.8698 - val_loss: 0.3634 - val_precision: 1.0000 - val_recall: 0.2875
 Epoch 2/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.5011 - loss: 0.7816 - val_accuracy: 0.9691 - val_loss: 0.3237
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - auc: 0.6802 - loss: 0.6551 - precision: 0.3743 - recall: 0.6250 - val_auc: 0.8575 - val_loss: 0.3895 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 3/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.6610 - loss: 0.6117 - val_accuracy: 1.0000 - val_loss: 0.1941
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - auc: 0.7947 - loss: 0.5456 - precision: 0.4806 - recall: 0.7450 - val_auc: 0.9049 - val_loss: 0.3844 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 4/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.8333 - loss: 0.4449 - val_accuracy: 0.9877 - val_loss: 0.1055
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - auc: 0.7943 - loss: 0.5360 - precision: 0.4545 - recall: 0.8250 - val_auc: 0.9116 - val_loss: 0.3825 - val_precision: 0.5324 - val_recall: 0.9250
 Epoch 5/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.8851 - loss: 0.3054 - val_accuracy: 0.9753 - val_loss: 0.0672
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8080 - loss: 0.5160 - precision: 0.4706 - recall: 0.8400 - val_auc: 0.9164 - val_loss: 0.3626 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 6/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.8694 - loss: 0.2752 - val_accuracy: 0.9877 - val_loss: 0.0448
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - auc: 0.7873 - loss: 0.5402 - precision: 0.4521 - recall: 0.8500 - val_auc: 0.9337 - val_loss: 0.3643 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 7/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 12ms/step - accuracy: 0.9718 - loss: 0.1170 - val_accuracy: 0.9877 - val_loss: 0.0320
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - auc: 0.8149 - loss: 0.5054 - precision: 0.4817 - recall: 0.8550 - val_auc: 0.9224 - val_loss: 0.3698 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 8/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 1s 11ms/step - accuracy: 0.9741 - loss: 0.0892 - val_accuracy: 0.8889 - val_loss: 0.2438
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - auc: 0.8165 - loss: 0.5014 - precision: 0.4873 - recall: 0.8650 - val_auc: 0.9139 - val_loss: 0.3671 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 9/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9223 - loss: 0.3175 - val_accuracy: 0.9259 - val_loss: 0.2244
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - auc: 0.8155 - loss: 0.4971 - precision: 0.4859 - recall: 0.8600 - val_auc: 0.9115 - val_loss: 0.3685 - val_precision: 0.5290 - val_recall: 0.9125
 Epoch 10/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.7297 - loss: 0.6274 - val_accuracy: 0.9938 - val_loss: 0.0399
-Epoch 11/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9268 - loss: 0.2155 - val_accuracy: 0.9877 - val_loss: 0.0319
-Epoch 12/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9155 - loss: 0.1532 - val_accuracy: 0.9938 - val_loss: 0.0354
-Epoch 13/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9876 - loss: 0.0988 - val_accuracy: 0.9877 - val_loss: 0.0240
-Epoch 14/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9437 - loss: 0.1239 - val_accuracy: 0.9938 - val_loss: 0.0212
-Epoch 15/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9910 - loss: 0.0636 - val_accuracy: 0.9938 - val_loss: 0.0144
-Epoch 16/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9347 - loss: 0.1603 - val_accuracy: 0.9938 - val_loss: 0.0131
-Epoch 17/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9651 - loss: 0.0888 - val_accuracy: 0.9938 - val_loss: 0.0231
-Epoch 18/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9899 - loss: 0.0515 - val_accuracy: 0.9877 - val_loss: 0.0265
-Epoch 19/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9944 - loss: 0.0428 - val_accuracy: 0.9877 - val_loss: 0.0349
-Epoch 20/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9966 - loss: 0.0389 - val_accuracy: 0.9877 - val_loss: 0.0265
-Epoch 21/50
-28/28 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9752 - loss: 0.0646 - val_accuracy: 0.9568 - val_loss: 0.1110
-6/6 ━━━━━━━━━━━━━━━━━━━━ 1s 69ms/step 
+26/26 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - auc: 0.8225 - loss: 0.4951 - precision: 0.4819 - recall: 0.8650 - val_auc: 0.9002 - val_loss: 0.3900 - val_precision: 0.5290 - val_recall: 0.9125
+12/12 ━━━━━━━━━━━━━━━━━━━━ 1s 61ms/step 
 
 Confusion Matrix:
-[[129  13]
- [  0  20]]
+[[257  18]
+ [ 27  53]]
 
 Classification Report:
               precision    recall  f1-score   support
 
-           0       1.00      0.91      0.95       142
-           1       0.61      1.00      0.75        20
+           0       0.90      0.93      0.92       275
+           1       0.75      0.66      0.70        80
 
-    accuracy                           0.92       162
-   macro avg       0.80      0.95      0.85       162
-weighted avg       0.95      0.92      0.93       162
+    accuracy                           0.87       355
+   macro avg       0.83      0.80      0.81       355
+weighted avg       0.87      0.87      0.87       355
 
 
 ================ FOLD 2 ================
-Train samples: 1050
+Train samples: 1163
 Val samples  : 323
-Floods in Val: 45
-Class weights: {0: 0.6489493201483313, 1: 2.1784232365145226}
+Floods in Val: 55
+Class weights: {0: 0.6585503963759909, 1: 2.0767857142857142}
 Epoch 1/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 4s 25ms/step - accuracy: 0.7629 - loss: 1.6763 - val_accuracy: 0.8607 - val_loss: 0.5001
+37/37 ━━━━━━━━━━━━━━━━━━━━ 10s 57ms/step - auc: 0.6388 - loss: 0.6972 - precision: 0.3399 - recall: 0.6179 - val_auc: 0.8994 - val_loss: 0.4266 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 Epoch 2/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 12ms/step - accuracy: 0.7124 - loss: 0.6485 - val_accuracy: 0.8607 - val_loss: 0.4763
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - auc: 0.6622 - loss: 0.6504 - precision: 0.3171 - recall: 0.6286 - val_auc: 0.8998 - val_loss: 0.3641 - val_precision: 0.0000e+00 - val_recall: 0.0000e+00
 Epoch 3/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 12ms/step - accuracy: 0.8114 - loss: 0.4328 - val_accuracy: 0.6316 - val_loss: 0.6204
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - auc: 0.7541 - loss: 0.5632 - precision: 0.4103 - recall: 0.8250 - val_auc: 0.9016 - val_loss: 0.2884 - val_precision: 0.8140 - val_recall: 0.6364
 Epoch 4/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9048 - loss: 0.2408 - val_accuracy: 0.5418 - val_loss: 1.1968
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - auc: 0.7903 - loss: 0.5197 - precision: 0.4573 - recall: 0.8607 - val_auc: 0.9118 - val_loss: 0.2783 - val_precision: 0.7273 - val_recall: 0.8727
 Epoch 5/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.8971 - loss: 0.2492 - val_accuracy: 0.4644 - val_loss: 1.7962
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - auc: 0.8364 - loss: 0.4653 - precision: 0.5102 - recall: 0.8893 - val_auc: 0.9161 - val_loss: 0.2922 - val_precision: 0.6575 - val_recall: 0.8727
 Epoch 6/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - accuracy: 0.8571 - loss: 0.3058 - val_accuracy: 0.7492 - val_loss: 0.4081
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - auc: 0.8435 - loss: 0.4535 - precision: 0.5010 - recall: 0.9214 - val_auc: 0.9190 - val_loss: 0.2451 - val_precision: 0.8333 - val_recall: 0.7273
 Epoch 7/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 10ms/step - accuracy: 0.9714 - loss: 0.0888 - val_accuracy: 0.6997 - val_loss: 0.8891
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - auc: 0.8320 - loss: 0.4609 - precision: 0.5131 - recall: 0.9107 - val_auc: 0.9220 - val_loss: 0.2403 - val_precision: 0.8519 - val_recall: 0.8364
 Epoch 8/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 12ms/step - accuracy: 0.9867 - loss: 0.0609 - val_accuracy: 0.6935 - val_loss: 1.0619
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8441 - loss: 0.4593 - precision: 0.5040 - recall: 0.9107 - val_auc: 0.9269 - val_loss: 0.2410 - val_precision: 0.8222 - val_recall: 0.6727
 Epoch 9/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 13ms/step - accuracy: 0.9810 - loss: 0.0584 - val_accuracy: 0.7399 - val_loss: 1.0141
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8296 - loss: 0.4762 - precision: 0.4815 - recall: 0.8821 - val_auc: 0.9130 - val_loss: 0.2850 - val_precision: 0.6076 - val_recall: 0.8727
 Epoch 10/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 13ms/step - accuracy: 0.9829 - loss: 0.0657 - val_accuracy: 0.6192 - val_loss: 1.7216
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - auc: 0.8516 - loss: 0.4648 - precision: 0.4959 - recall: 0.8536 - val_auc: 0.9172 - val_loss: 0.3382 - val_precision: 0.5647 - val_recall: 0.8727
 Epoch 11/50
-33/33 ━━━━━━━━━━━━━━━━━━━━ 0s 11ms/step - accuracy: 0.9571 - loss: 0.1404 - val_accuracy: 0.3715 - val_loss: 2.9391
-11/11 ━━━━━━━━━━━━━━━━━━━━ 1s 43ms/step 
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8498 - loss: 0.4544 - precision: 0.4933 - recall: 0.9250 - val_auc: 0.9331 - val_loss: 0.2510 - val_precision: 0.8519 - val_recall: 0.8364
+Epoch 12/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8531 - loss: 0.4417 - precision: 0.5069 - recall: 0.9214 - val_auc: 0.9350 - val_loss: 0.2281 - val_precision: 0.8545 - val_recall: 0.8545
+Epoch 13/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - auc: 0.8569 - loss: 0.4404 - precision: 0.5155 - recall: 0.8929 - val_auc: 0.9269 - val_loss: 0.3051 - val_precision: 0.5854 - val_recall: 0.8727
+Epoch 14/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - auc: 0.8672 - loss: 0.4553 - precision: 0.4909 - recall: 0.8679 - val_auc: 0.9360 - val_loss: 0.3343 - val_precision: 0.5333 - val_recall: 0.8727
+Epoch 15/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - auc: 0.8452 - loss: 0.4603 - precision: 0.4875 - recall: 0.9036 - val_auc: 0.9437 - val_loss: 0.2716 - val_precision: 0.6857 - val_recall: 0.8727
+Epoch 16/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - auc: 0.8629 - loss: 0.4300 - precision: 0.5078 - recall: 0.9286 - val_auc: 0.9446 - val_loss: 0.2334 - val_precision: 0.8545 - val_recall: 0.8545
+Epoch 17/50
+37/37 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - auc: 0.8748 - loss: 0.4235 - precision: 0.5100 - recall: 0.9107 - val_auc: 0.9421 - val_loss: 0.2706 - val_precision: 0.6316 - val_recall: 0.8727
+11/11 ━━━━━━━━━━━━━━━━━━━━ 1s 62ms/step 
 
 Confusion Matrix:
-[[257  21]
- [  1  44]]
+[[251  17]
+ [  7  48]]
 
 Classification Report:
               precision    recall  f1-score   support
 
-           0       1.00      0.92      0.96       278
-           1       0.68      0.98      0.80        45
+           0       0.97      0.94      0.95       268
+           1       0.74      0.87      0.80        55
 
     accuracy                           0.93       323
-   macro avg       0.84      0.95      0.88       323
-weighted avg       0.95      0.93      0.94       323
+   macro avg       0.86      0.90      0.88       323
+weighted avg       0.93      0.93      0.93       323
 
 
 ================ CV SUMMARY ================
-Fold 1 → Acc: 0.920, Recall(Flood): 1.000
-Fold 2 → Acc: 0.932, Recall(Flood): 0.978
+Fold 1 → Acc: 0.873, Recall(Flood): 0.662
+Fold 2 → Acc: 0.926, Recall(Flood): 0.873
 
 MEAN CV METRICS
-Accuracy      : 0.926
-Recall(Flood) : 0.989
+Accuracy      : 0.899
+Recall(Flood) : 0.768
 Epoch 1/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.7421 - loss: 1.3898C:\Users\smani\AppData\Local\Programs\Python\Python310\lib\site-packages\keras\src\callbacks\early_stopping.py:99: UserWarning: Early stopping conditioned on metric `val_loss` which is not available. Available metrics are: accuracy,loss 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 14ms/step - auc: 0.4281 - loss: 0.8346 - precision: 0.2506 - recall: 0.4349C:\Users\smani\AppData\Local\Programs\Python\Python310\lib\site-packages\keras\src\callbacks\early_stopping.py:99: UserWarning: Early stopping conditioned on metric `val_loss` which is not available. Available metrics are: auc,loss,precision,recall
   current = self.get_monitor_value(logs)
-51/51 ━━━━━━━━━━━━━━━━━━━━ 5s 9ms/step - accuracy: 0.7506 - loss: 1.1535
+51/51 ━━━━━━━━━━━━━━━━━━━━ 9s 14ms/step - auc: 0.5782 - loss: 0.6536 - precision: 0.2322 - recall: 0.4388
 Epoch 2/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.7153 - loss: 0.6862 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.8346 - loss: 0.4711 - precision: 0.4863 - recall: 0.7970
 Epoch 3/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.7624 - loss: 0.5038 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.8427 - loss: 0.4450 - precision: 0.5000 - recall: 0.8388
 Epoch 4/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8385 - loss: 0.3708 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8547 - loss: 0.4223 - precision: 0.5185 - recall: 0.8776
 Epoch 5/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.8608 - loss: 0.2968 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8523 - loss: 0.4381 - precision: 0.4857 - recall: 0.8597
 Epoch 6/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9220 - loss: 0.2087 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.8699 - loss: 0.3999 - precision: 0.5397 - recall: 0.8925
 Epoch 7/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8113 - loss: 0.3915 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.8704 - loss: 0.3969 - precision: 0.5275 - recall: 0.8866 
 Epoch 8/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8626 - loss: 0.2678 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.8726 - loss: 0.3939 - precision: 0.5369 - recall: 0.8896
 Epoch 9/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8967 - loss: 0.2468 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8739 - loss: 0.4067 - precision: 0.5053 - recall: 0.8567
 Epoch 10/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9270 - loss: 0.1805 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8791 - loss: 0.3879 - precision: 0.5199 - recall: 0.8985
 Epoch 11/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8960 - loss: 0.2603 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8862 - loss: 0.3689 - precision: 0.5359 - recall: 0.9134
 Epoch 12/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8465 - loss: 0.2511 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.8823 - loss: 0.3805 - precision: 0.5199 - recall: 0.8985  
 Epoch 13/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 7ms/step - accuracy: 0.9288 - loss: 0.1818   
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.8885 - loss: 0.3791 - precision: 0.5034 - recall: 0.8925
 Epoch 14/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9226 - loss: 0.1970 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8869 - loss: 0.3836 - precision: 0.5263 - recall: 0.8955
 Epoch 15/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9356 - loss: 0.1496 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.9008 - loss: 0.3744 - precision: 0.5198 - recall: 0.8627
 Epoch 16/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9134 - loss: 0.2179 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.9050 - loss: 0.3501 - precision: 0.5405 - recall: 0.8955
 Epoch 17/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.9350 - loss: 0.1337 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 12ms/step - auc: 0.9075 - loss: 0.3488 - precision: 0.5247 - recall: 0.8866
 Epoch 18/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8874 - loss: 0.2781 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9056 - loss: 0.3575 - precision: 0.5154 - recall: 0.8985
 Epoch 19/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8552 - loss: 0.2305 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.8993 - loss: 0.3665 - precision: 0.5105 - recall: 0.8716
 Epoch 20/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9394 - loss: 0.1587 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.9031 - loss: 0.3529 - precision: 0.5232 - recall: 0.9075 
 Epoch 21/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9127 - loss: 0.2162 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - auc: 0.9158 - loss: 0.3330 - precision: 0.5356 - recall: 0.8985  
 Epoch 22/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 10ms/step - accuracy: 0.9325 - loss: 0.1369
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9178 - loss: 0.3399 - precision: 0.5271 - recall: 0.8985
 Epoch 23/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.9276 - loss: 0.1652   
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.9170 - loss: 0.3258 - precision: 0.5469 - recall: 0.9045
 Epoch 24/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9270 - loss: 0.1642 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9224 - loss: 0.3186 - precision: 0.5408 - recall: 0.9104
 Epoch 25/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9208 - loss: 0.1665 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.9213 - loss: 0.3206 - precision: 0.5448 - recall: 0.9075
 Epoch 26/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9468 - loss: 0.1184 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9221 - loss: 0.3196 - precision: 0.5321 - recall: 0.9164  
 Epoch 27/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9703 - loss: 0.0870 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.8908 - loss: 0.3762 - precision: 0.5130 - recall: 0.8239  
 Epoch 28/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9152 - loss: 0.2292 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.9081 - loss: 0.3534 - precision: 0.5157 - recall: 0.8806
 Epoch 29/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9561 - loss: 0.1264 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9247 - loss: 0.3183 - precision: 0.5476 - recall: 0.8925
 Epoch 30/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8880 - loss: 0.2528 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9200 - loss: 0.3225 - precision: 0.5631 - recall: 0.8925
 Epoch 31/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.8979 - loss: 0.1472 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.9315 - loss: 0.3035 - precision: 0.5549 - recall: 0.9045 
 Epoch 32/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9053 - loss: 0.2196 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.9393 - loss: 0.2848 - precision: 0.5727 - recall: 0.9284
 Epoch 33/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9332 - loss: 0.1278 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9314 - loss: 0.3048 - precision: 0.5695 - recall: 0.9045
 Epoch 34/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9251 - loss: 0.1610 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9062 - loss: 0.3499 - precision: 0.5191 - recall: 0.8537
 Epoch 35/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9660 - loss: 0.1028 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9298 - loss: 0.3132 - precision: 0.5588 - recall: 0.9075
 Epoch 36/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9573 - loss: 0.0970 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9254 - loss: 0.3093 - precision: 0.5905 - recall: 0.8866 
 Epoch 37/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9158 - loss: 0.1900 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9291 - loss: 0.3151 - precision: 0.5315 - recall: 0.9075
 Epoch 38/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 7ms/step - accuracy: 0.9684 - loss: 0.0958 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9318 - loss: 0.3000 - precision: 0.5447 - recall: 0.9463
 Epoch 39/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9783 - loss: 0.0829 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - auc: 0.9426 - loss: 0.2794 - precision: 0.5652 - recall: 0.9313
 Epoch 40/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.9623 - loss: 0.0795   
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.9417 - loss: 0.2848 - precision: 0.5659 - recall: 0.9224
 Epoch 41/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 9ms/step - accuracy: 0.8632 - loss: 0.3825 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - auc: 0.9494 - loss: 0.2659 - precision: 0.6258 - recall: 0.9134  
 Epoch 42/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 9ms/step - accuracy: 0.8521 - loss: 0.2247 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.9452 - loss: 0.2781 - precision: 0.5855 - recall: 0.8896 
 Epoch 43/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8886 - loss: 0.2530 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9499 - loss: 0.2606 - precision: 0.6154 - recall: 0.9313
 Epoch 44/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9517 - loss: 0.1272 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - auc: 0.9446 - loss: 0.2790 - precision: 0.6043 - recall: 0.9164
 Epoch 45/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9412 - loss: 0.1322 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 14ms/step - auc: 0.8451 - loss: 0.4809 - precision: 0.4778 - recall: 0.7075
 Epoch 46/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.8861 - loss: 0.2512 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9223 - loss: 0.3144 - precision: 0.5456 - recall: 0.9284
 Epoch 47/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9090 - loss: 0.1353 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9361 - loss: 0.2886 - precision: 0.5544 - recall: 0.9433
 Epoch 48/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 0s 8ms/step - accuracy: 0.9462 - loss: 0.1148 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 13ms/step - auc: 0.9433 - loss: 0.2722 - precision: 0.5707 - recall: 0.9403
 Epoch 49/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.9567 - loss: 0.0955 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9243 - loss: 0.3238 - precision: 0.5558 - recall: 0.8627
 Epoch 50/50
-51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 9ms/step - accuracy: 0.9530 - loss: 0.1055 
+51/51 ━━━━━━━━━━━━━━━━━━━━ 1s 15ms/step - auc: 0.9361 - loss: 0.2938 - precision: 0.5558 - recall: 0.9075
 
 ✅ Final Binary Flood LSTM model saved successfully
-PS D:\pers\disaster> 
